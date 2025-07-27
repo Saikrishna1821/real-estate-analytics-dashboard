@@ -10,30 +10,34 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const { data: userData } = useQuery({
-    queryKey: ["user"],
-    queryFn: () => {
-      const token = localStorage.getItem("token");
-      const savedUser = localStorage.getItem("user");
-      if (token && savedUser) {
-        return JSON.parse(savedUser);
-      }
-      return null;
-    },
-    enabled: !!localStorage.getItem("token"),
-  });
-
+  // Check for existing user on mount
   useEffect(() => {
-    if (userData) {
-      setUser(userData);
+    const token = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+    
+    if (token && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (error) {
+        console.error("Error parsing saved user:", error);
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
     }
     setLoading(false);
-  }, [userData]);
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+  };
 
   const value = {
     user,
     loading,
     setUser,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -50,13 +54,14 @@ export const useAuthContext = () => {
 export const useAuth = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { logout: contextLogout, setUser } = useAuthContext();
 
   const loginMutation = useMutation({
     mutationFn: (credentials) => api.auth.login(credentials),
     onSuccess: (response) => {
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
-      queryClient.setQueryData(["user"], response.user);
+      setUser(response.user);
       navigate("/market-view");
     },
     onError: (error) => {
@@ -65,8 +70,7 @@ export const useAuth = () => {
   });
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    contextLogout();
     queryClient.clear();
     navigate("/login");
   };

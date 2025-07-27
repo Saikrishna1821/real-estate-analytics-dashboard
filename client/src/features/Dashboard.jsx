@@ -68,7 +68,9 @@ const Sidebar = ({ isOpen, setIsOpen, currentPath, navigate, user }) => {
           {isOpen && (
             <div className="flex flex-col">
               <span className="text-lg font-bold text-gray-800">PANTHERA</span>
-              <span className="text-xs font-normal text-gray-500">INFOTECH</span>
+              <span className="text-xs font-normal text-gray-500">
+                INFOTECH
+              </span>
             </div>
           )}
         </div>
