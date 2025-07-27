@@ -1,0 +1,40 @@
+{
+  "name": "real-estate-analytics-dashboard",
+  "version": "1.0.0",
+  "description": "Real Estate Analytics Dashboard with React and Node.js",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently --names \"server,client\" --prefix name \"npm run server\" \"npm run client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm start",
+    "server": "cd server && npm run dev",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "start": "cd server && npm start",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
+    "dev:debug": "concurrently --names \"server,client\" --prefix name \"npm run dev:server:debug\" \"npm run client\"",
+    "dev:server:debug": "cd server && npm run dev:debug",
+    "setup:dev": "chmod +x scripts/dev-setup.sh && ./scripts/dev-setup.sh",
+    "setup:prod": "chmod +x scripts/deploy.sh && ./scripts/deploy.sh",
+    "pm2:start": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:delete": "pm2 delete ecosystem.config.js"
+  },
+  "keywords": [
+    "react",
+    "nodejs",
+    "tailwindcss",
+    "dashboard",
+    "analytics"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4",
+    "react-leaflet": "^5.0.0"
+  }
+}
